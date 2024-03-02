@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import {
   INPUT_CHANGE,
   MOVE_CLOCKWISE,
@@ -23,11 +25,20 @@ export function moveCounterClockwise(index) {
   }
 }
 
-export function selectAnswer() { }
+export function selectAnswer(answer_id) { 
+  return {
+    type: SET_SELECTED_ANSWER ,
+    payload: answer_id
+  }
+}
 
 export function setMessage() { }
 
-export function setQuiz() { }
+export function setQuiz() { 
+  return {
+    type: SET_QUIZ_INTO_STATE
+  }
+}
 
 export function inputChange() { }
 
@@ -37,8 +48,15 @@ export function resetForm() { }
 export function fetchQuiz(props) {
   return function (dispatch) {
     // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
+    dispatch({type: SET_QUIZ_INTO_STATE});
     // On successful GET:
     // - Dispatch an action to send the obtained quiz to its state
+    axios.get('http://localhost:9000/api/quiz/next')
+      .then( ({data}) => {
+        // console.log(data)
+        dispatch({type: SET_QUIZ_INTO_STATE, payload: data})
+      })
+      .catch(err => err.message)
   }
 }
 export function postAnswer() {

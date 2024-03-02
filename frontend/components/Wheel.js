@@ -3,7 +3,7 @@ import { moveClockwise, moveCounterClockwise } from '../state/action-creators'
 import { connect } from 'react-redux'
 
 
-export function Wheel(props) {
+function Wheel(props) {
   const { moveClockwise, moveCounterClockwise } = props;
 
   const handleClockwise = (index) => {
@@ -35,4 +35,10 @@ export function Wheel(props) {
   )
 }
 
-export default connect(state => state, {moveClockwise, moveCounterClockwise})(Wheel)
+const mapStateToProps = state => {
+  return {
+    wheel: state.wheel
+  }
+}
+
+export default connect(mapStateToProps, {moveClockwise, moveCounterClockwise})(Wheel)

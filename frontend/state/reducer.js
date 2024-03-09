@@ -27,8 +27,6 @@ const initialQuizState = null
 function quiz(state = initialQuizState, action) {
   switch (action.type) {
     case SET_QUIZ_INTO_STATE:
-      return initialQuizState;
-    case SET_SELECTED_ANSWER:
       return action.payload;
     default:
       return state
@@ -45,9 +43,15 @@ function selectedAnswer(state = initialSelectedAnswerState, action) {
   }
 }
 
-const initialMessageState = ''
+const initialMessageState = "";
 function infoMessage(state = initialMessageState, action) {
-  return state
+  switch (action.type) {
+    case SET_INFO_MESSAGE:
+      return action.payload; 
+      // the info message to be displayed, payload is in action creator dispatch
+    default:
+      return state;
+  }
 }
 
 const initialFormState = {

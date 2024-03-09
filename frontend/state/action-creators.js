@@ -44,27 +44,39 @@ export function inputChange() { }
 
 export function resetForm() { }
 
-// ❗ Async action creators
+// ❗ Async action creators aka thunks
 export function fetchQuiz(props) {
   return function (dispatch) {
-    // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
-    dispatch({type: SET_QUIZ_INTO_STATE});
     // On successful GET:
     // - Dispatch an action to send the obtained quiz to its state
     axios.get('http://localhost:9000/api/quiz/next')
       .then( ({data}) => {
-        // console.log(data)
         dispatch({type: SET_QUIZ_INTO_STATE, payload: data})
       })
-      .catch(err => err.message)
+      .catch(err => {
+        console.log('Error fetching quiz', err)
+        dispatch({type: SET_INFO_MESSAGE, payload: 'Error fetching quiz data'})
+      })
   }
 }
-export function postAnswer() {
+export function postAnswer(answer) {
+  // answer is what holds the value of what answer the user selected
   return function (dispatch) {
     // On successful POST:
-    // - Dispatch an action to reset the selected answer state
-    // - Dispatch an action to set the server message to state
-    // - Dispatch the fetching of the next quiz
+    axios.post("http://localhost:9000/api/quiz/answer", answer)
+      .then(({ data }) => {
+        // - Dispatch an action to reset the selected answer state
+        dispatch({type: SET_SELECTED_ANSWER, payload: data})
+        // - Dispatch an action to set the server message to state
+        dispatch({ type: 'SET_INFO_MESSAGE', payload: data.message });
+        // - Dispatch the fetching of the next quiz
+        dispatch(fetchQuiz());
+      })
+      .catch((err) => {
+        console.error("Error posting answer:", err);
+        // On error, dispatch SET_INFO_MESSAGE with payload of "Error posting answer"
+        dispatch({ type: 'SET_INFO_MESSAGE', payload: "Error posting answer" });
+      });
   }
 }
 export function postQuiz() {

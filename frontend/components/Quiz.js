@@ -4,11 +4,15 @@ import * as actionCreators from '../state/action-creators'
 
 
 function Quiz(props) {
-  const { quiz, selectAnswer, selectedAnswer, fetchQuiz } = props;
+  const { quiz, selectAnswer, selectedAnswer, fetchQuiz, postAnswer } = props;
 
   useEffect(() => {
     !quiz && fetchQuiz();
   }, [])
+
+  const onSubmit = () => {
+    postAnswer()
+  }
 
   return (
     <div id="wrapper">
@@ -34,7 +38,7 @@ function Quiz(props) {
               </div>
             </div>
 
-            <button id="submitAnswerBtn">Submit answer</button>
+            <button onClick={onSubmit} id="submitAnswerBtn" disabled={selectedAnswer ? false : true}>Submit answer</button>
           </>
         ) : 'Loading next quiz...'
       }
@@ -44,7 +48,8 @@ function Quiz(props) {
 
 const mapStateToProps = state => {
   return {
-    quiz: state.quiz
+    quiz: state.quiz,
+    selectedAnswer: state.selectedAnswer
   }
 }
 
